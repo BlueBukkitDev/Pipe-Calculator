@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Main {
 	public static List<Pipe> parts = new ArrayList<Pipe>();
-	public static String version = "1.2";
+	public static String version = "1.3";
 	public static int format = 1;
 	public static int accuracy = 16;
 	public static double arrays = 1;
@@ -138,49 +138,13 @@ Waste: 206.559166666666
 		lBrackets = rails*2;
 		supportWidth = frameWidth+12;
 		calculateBackPosts();
-		double lastWaste = 0;
-		double waste = 0;
-		for(Pipe each:parts) {
-			waste += each.getLength();
-		}
-		System.out.println("Waste: "+(waste-lastWaste));
 		calculateFrontPosts();
-		lastWaste = waste;
-		waste = 0;
-		for(Pipe each:parts) {
-			waste += each.getLength();
-		}
-		System.out.println("Waste: "+(waste-lastWaste));
+		calculateXBraces();
 		if(usesVBraces) {
 			calculateVBraces();
-			lastWaste = waste;
-			waste = 0;
-			for(Pipe each:parts) {
-				waste += each.getLength();
-			}
-			System.out.println("Waste: "+(waste-lastWaste));
 		}
-		calculateXBraces();
-		lastWaste = waste;
-		waste = 0;
-		for(Pipe each:parts) {
-			waste += each.getLength();
-		}
-		System.out.println("Waste: "+(waste-lastWaste));
 		calculateFrontSupport();
-		lastWaste = waste;
-		waste = 0;
-		for(Pipe each:parts) {
-			waste += each.getLength();
-		}
-		System.out.println("Waste: "+(waste-lastWaste));
 		calculateBackSupport();
-		lastWaste = waste;
-		waste = 0;
-		for(Pipe each:parts) {
-			waste += each.getLength();
-		}
-		System.out.println("Waste: "+(waste-lastWaste));
 		
 		for(Pipe each:parts) {
 			pipeWasted += each.getLength();
@@ -271,9 +235,11 @@ Waste: 206.559166666666
 	 * @return The <code>Pipe</code> that was found and applied
 	 */
 	public static Pipe getBestMatchedPipe(double requiredLength, PartType type) {//General electric, LV, GM, 3MW
+		int wholes = 0;
 		while(requiredLength > pipeLength) {
 			requiredLength -= pipeLength;
 			pipesUsed++;
+			wholes++;
 			switch(type) {
 			case FRONT_POST:pipesForFrontPosts++;break;
 			case BACK_POST:pipesForBackPosts++;break;
@@ -287,16 +253,22 @@ Waste: 206.559166666666
 		currentSpares[0] = new Pipe();
 		
 		for(Pipe each:parts) {
-			if(each.canDerive(requiredLength, false) && each.getLength() < currentSpares[0].getLength()) {
-				currentSpares[0] = each;
+			if(wholes == 0) {
+				if(each.canDerive(requiredLength, false) && each.getLength() < currentSpares[0].getLength()) {
+					currentSpares[0] = each;
+				}
+			}else {
+				if(each.canDerive(requiredLength, true) && each.getLength() < currentSpares[0].getLength()) {
+					currentSpares[0] = each;
+				}
 			}
 		}
-		if(type == PartType.FRONT_SUPPORT||type == PartType.BACK_SUPPORT) {
+		if(type == PartType.FRONT_SUPPORT||type == PartType.BACK_SUPPORT||type == PartType.V_BRACE) {
 			if(currentSpares[0].getLength() == pipeLength) {
 				requiredLength /= 2;
 				for(int partNeeded = 0; partNeeded < 2; partNeeded++) {
 					for(Pipe each:parts) {
-						if(each.canDerive(requiredLength, false) && each.getLength() < currentSpares[partNeeded].getLength()) {
+						if(each.canDerive(requiredLength, true) && each.getLength() < currentSpares[partNeeded].getLength()) {
 							currentSpares[partNeeded] = each;
 						}
 					}
@@ -392,13 +364,13 @@ Waste: 206.559166666666
 			window.println("Rail Length: "+inchesToFeet(arrayHeight+railExcess*2));
 			window.println("Rail Spacing: "+inchesToFeet(railSpacing));
 			window.println("Panel overhang past rail: "+inchesToFeet(panelProtrusion));
-			window.println("Front Support length: "+inchesToFeet(supportWidth));
-			window.println("Back Support length: "+inchesToFeet(supportWidth));
+			window.println("Front Rail Support length: "+inchesToFeet(supportWidth));
+			window.println("Back Rail Support length: "+inchesToFeet(supportWidth));
 			if(usesVBraces) {
 				window.println("V-Brace length: "+inchesToFeet(vBraceLength));
 			}
 			window.println("Cross Brace length: "+inchesToFeet(XBraceLength));
-			window.println("Front post length: "+inchesToFeet(frontPostLength));
+			window.println("Front Post length: "+inchesToFeet(frontPostLength));
 			window.println("Back Post Length: "+inchesToFeet(backPostLength));
 			window.println("Post Spacing (x): "+inchesToFeet(postSpacingX));///////////////////
 			window.println("Post Spacing (y): "+inchesToFeet(postSpacingY)+"\n");
@@ -410,6 +382,7 @@ Waste: 206.559166666666
 				window.println("V-Braces: "+(int)vBraces);
 			}
 			window.println("Cross Braces: "+(int)xBraces);
+			window.println("Rail Supports: "+(int)arrays*2);
 			window.println("Mid Clamps: "+(int)midClamps);
 			window.println("End Clamps: "+(int)endClamps);
 			window.println("Adjustable Elbows: "+(int)adjustableElbows);
@@ -422,8 +395,8 @@ Waste: 206.559166666666
 			if(usesVBraces) {
 				window.println("Pipes used for v-braces: "+(int)pipesForVBraces);
 			}
-			window.println("Pipes used for front support: "+(int)pipesForFrontSupport);
-			window.println("Pipes used for back support: "+(int)pipesForBackSupport+"\n");
+			window.println("Pipes used for front rail support: "+(int)pipesForFrontSupport);
+			window.println("Pipes used for back rail support: "+(int)pipesForBackSupport+"\n");
 			
 			window.println("Total pipes used: "+(int)pipesUsed);
 			window.println("Parts left over: "+parts.size());
@@ -440,13 +413,13 @@ Waste: 206.559166666666
 			window.println("Rail Length: "+ratDec(arrayHeight+railExcess*2)+"\"");
 			window.println("Rail Spacing: "+ratDec(railSpacing)+"\"");
 			window.println("Panel overhang past rail: "+ratDec(panelProtrusion)+"\"");
-			window.println("Front Support length: "+ratDec(supportWidth)+"\"");
-			window.println("Back Support length: "+ratDec(supportWidth)+"\"");
+			window.println("Front Rail Support length: "+ratDec(supportWidth)+"\"");
+			window.println("Back Rail Support length: "+ratDec(supportWidth)+"\"");
 			if(usesVBraces) {
 				window.println("V-Brace length: "+ratDec(vBraceLength)+"\"");
 			}
 			window.println("Cross Brace length: "+ratDec(XBraceLength)+"\"");
-			window.println("Front post length: "+ratDec(frontPostLength)+"\"");
+			window.println("Front Post length: "+ratDec(frontPostLength)+"\"");
 			window.println("Back Post Length: "+ratDec(backPostLength)+"\"");
 			window.println("Post Spacing (x): "+ratDec(postSpacingX)+"\"");
 			window.println("Post Spacing (y): "+ratDec(postSpacingY)+"\"\n");
@@ -458,6 +431,7 @@ Waste: 206.559166666666
 				window.println("V-Braces: "+(int)vBraces);
 			}
 			window.println("Cross Braces: "+(int)xBraces);
+			window.println("Rail Supports: "+(int)arrays*2);
 			window.println("Mid Clamps: "+(int)midClamps);
 			window.println("End Clamps: "+(int)endClamps);
 			window.println("Adjustable Elbows: "+(int)adjustableElbows);
@@ -470,8 +444,8 @@ Waste: 206.559166666666
 			if(usesVBraces) {
 				window.println("Pipes used for v-braces: "+(int)pipesForVBraces);
 			}
-			window.println("Pipes used for front support: "+(int)pipesForFrontSupport);
-			window.println("Pipes used for back support: "+(int)pipesForBackSupport+"\n");
+			window.println("Pipes used for front rail support: "+(int)pipesForFrontSupport);
+			window.println("Pipes used for back rail support: "+(int)pipesForBackSupport+"\n");
 			
 			window.println("Total pipes used: "+(int)pipesUsed);
 			window.println("Parts left over: "+parts.size());
@@ -488,13 +462,13 @@ Waste: 206.559166666666
 			window.println("Rail Length: "+inchesToFeetWords(arrayHeight+railExcess*2));
 			window.println("Rail Spacing: "+inchesToFeetWords(railSpacing));
 			window.println("Panel overhang past rail: "+inchesToFeetWords(panelProtrusion));
-			window.println("Front Support length: "+inchesToFeetWords(supportWidth));
-			window.println("Back Support length: "+inchesToFeetWords(supportWidth));
+			window.println("Front Rail Support length: "+inchesToFeetWords(supportWidth));
+			window.println("Back Rail Support length: "+inchesToFeetWords(supportWidth));
 			if(usesVBraces) {
 				window.println("V-Brace length: "+inchesToFeetWords(vBraceLength));
 			}
 			window.println("Cross Brace length: "+inchesToFeetWords(XBraceLength));
-			window.println("Front post length: "+inchesToFeetWords(frontPostLength));
+			window.println("Front Post length: "+inchesToFeetWords(frontPostLength));
 			window.println("Back Post Length: "+inchesToFeetWords(backPostLength));
 			window.println("Post Spacing (x): "+inchesToFeetWords(postSpacingX));///////////////////
 			window.println("Post Spacing (y): "+inchesToFeetWords(postSpacingY)+"\n");
@@ -506,6 +480,7 @@ Waste: 206.559166666666
 				window.println("V-Braces: "+(int)vBraces);
 			}
 			window.println("Cross Braces: "+(int)xBraces);
+			window.println("Rail Supports: "+(int)arrays*2);
 			window.println("Mid Clamps: "+(int)midClamps);
 			window.println("End Clamps: "+(int)endClamps);
 			window.println("Adjustable Elbows: "+(int)adjustableElbows);
@@ -518,8 +493,8 @@ Waste: 206.559166666666
 			if(usesVBraces) {
 				window.println("Pipes used for v-braces: "+(int)pipesForVBraces);
 			}
-			window.println("Pipes used for front support: "+(int)pipesForFrontSupport);
-			window.println("Pipes used for back support: "+(int)pipesForBackSupport+"\n");
+			window.println("Pipes used for front rail support: "+(int)pipesForFrontSupport);
+			window.println("Pipes used for back rail support: "+(int)pipesForBackSupport+"\n");
 			
 			window.println("Total pipes used: "+(int)pipesUsed);
 			window.println("Parts left over: "+parts.size());

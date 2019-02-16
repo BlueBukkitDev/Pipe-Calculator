@@ -30,7 +30,9 @@ public class Pipe {
 	public Pipe derivePart(double length, boolean needsThreads) {
 		if(canDerive(length, needsThreads)) {
 			this.length -= length;
-			threads -= 1;
+			if(needsThreads||this.length == Main.pipeLength) {
+				threads--;
+			}
 			return new Pipe(length, (byte)1);
 		}
 		return null;
