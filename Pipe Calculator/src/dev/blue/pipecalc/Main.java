@@ -76,7 +76,6 @@ public class Main {
 		calculate();
 	}
 	
-	
 	/*
 Calculating post spacing
 Calculating back posts
@@ -108,7 +107,6 @@ Calculating back support
 Waste: 206.559166666666
 
 	 */
-	
 	
 	private static void calculate() {
 		calculatePostSpacing();
