@@ -552,8 +552,8 @@ public class Window extends JFrame implements ActionListener {
 		vBraces.addActionListener(this);
 		vBraces.setSelected(true);
 		ButtonGroup pipeSize = new ButtonGroup();
-		CustomRadioButtonMenuItem pipe1_5 = new CustomRadioButtonMenuItem("1.5\"");
-		CustomRadioButtonMenuItem pipe2 = new CustomRadioButtonMenuItem("2\"");
+		CustomRadioButtonMenuItem pipe1_5 = new CustomRadioButtonMenuItem("1.5\" diam");
+		CustomRadioButtonMenuItem pipe2 = new CustomRadioButtonMenuItem("2\" diam");
 		pipe1_5.setActionCommand("pipe1_5");
 		pipe2.setActionCommand("pipe2");
 		pipe1_5.addActionListener(this);
@@ -574,10 +574,10 @@ public class Window extends JFrame implements ActionListener {
 		ButtonGroup formatGroup = new ButtonGroup();
 		CustomRadioButtonMenuItem feetInch = new CustomRadioButtonMenuItem("10' 6.5\"");
 		CustomRadioButtonMenuItem justInch = new CustomRadioButtonMenuItem("126.5\"");
-		CustomRadioButtonMenuItem feetInchW1 = new CustomRadioButtonMenuItem("63/64ths");
-		CustomRadioButtonMenuItem feetInchW2 = new CustomRadioButtonMenuItem("31/32nds");
-		CustomRadioButtonMenuItem feetInchW3 = new CustomRadioButtonMenuItem("15/16ths");
-		CustomRadioButtonMenuItem feetInchW4 = new CustomRadioButtonMenuItem("7/8ths");
+		CustomRadioButtonMenuItem feetInchW1 = new CustomRadioButtonMenuItem("64ths accuracy");
+		CustomRadioButtonMenuItem feetInchW2 = new CustomRadioButtonMenuItem("32nds accuracy");
+		CustomRadioButtonMenuItem feetInchW3 = new CustomRadioButtonMenuItem("16ths accuracy");
+		CustomRadioButtonMenuItem feetInchW4 = new CustomRadioButtonMenuItem("8ths accuracy");
 		JMenu feetInchW = new JMenu("10ft, 6 1/2in");
 		feetInch.setActionCommand("feetInch");
 		justInch.setActionCommand("justInch");
@@ -609,7 +609,7 @@ public class Window extends JFrame implements ActionListener {
 		CustomRadioButtonMenuItem panelsHigh = new CustomRadioButtonMenuItem("Panel Rows");
 		CustomRadioButtonMenuItem pipeLength = new CustomRadioButtonMenuItem("Pipe Length");
 		CustomRadioButtonMenuItem clampWidth = new CustomRadioButtonMenuItem("Clamp Width");
-		CustomRadioButtonMenuItem panelSpacing = new CustomRadioButtonMenuItem("Panel Space");//How many pipes to be divided into posts + vbraces, how many into crossbraces + vbraces, etc. Need to add this into calcs. 
+		CustomRadioButtonMenuItem panelSpacing = new CustomRadioButtonMenuItem("Panel Space");
 		CustomRadioButtonMenuItem railLength = new CustomRadioButtonMenuItem("Rail Length");
 		CustomRadioButtonMenuItem railProtrusion = new CustomRadioButtonMenuItem("Rail Overhang");
 		CustomRadioButtonMenuItem arrays = new CustomRadioButtonMenuItem("Arrays");
@@ -687,7 +687,7 @@ public class Window extends JFrame implements ActionListener {
 	public static String getTime() {
 		int year = Calendar.getInstance().get(Calendar.YEAR);
 		year -= 2000;
-		int month = Calendar.getInstance().get(Calendar.MONTH);
+		int month = Calendar.getInstance().get(Calendar.MONTH)+1;
 		int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
 		int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
 		int minute = Calendar.getInstance().get(Calendar.MINUTE);

@@ -372,6 +372,17 @@ Waste: 206.559166666666
 		
 		parts.clear();
 	}
+	
+	/*
+Version 1.4 - Module Columns
+
+- Added options to set module columns and rows
+- Added option to set rail length
+- Added rail quantity calculation
+- Added rail splice calculation
+- Added Y-Axis post spacing calculation
+
+- Removed divisible-by-4 module input*/
 	public static void writeOut() {
 		if(format == 1) {
 			window.output.setText("");
@@ -381,21 +392,21 @@ Waste: 206.559166666666
 			window.println("Rail Length: "+inchesToFeet(railRunLength));
 			window.println("Rail Spacing: "+inchesToFeet(railSpacing));
 			window.println("Panel overhang past rail: "+inchesToFeet(panelProtrusion));
-			window.println("Front Rail Support length: "+inchesToFeet(supportWidth));
-			window.println("Back Rail Support length: "+inchesToFeet(supportWidth));
+			window.println("South Rail Support length: "+inchesToFeet(supportWidth));
+			window.println("North Rail Support length: "+inchesToFeet(supportWidth));
 			if(usesVBraces) {
 				window.println("V-Brace length: "+inchesToFeet(vBraceLength));
 			}
 			window.println("Cross Brace length: "+inchesToFeet(XBraceLength));
-			window.println("Front Post length: "+inchesToFeet(frontPostLength));
-			window.println("Back Post Length: "+inchesToFeet(backPostLength));
-			window.println("Post Spacing (x): "+inchesToFeet(postSpacingX));///////////////////
-			window.println("Post Spacing (y): "+inchesToFeet(postSpacingY)+"\n");
+			window.println("South Pier length: "+inchesToFeet(frontPostLength));
+			window.println("North Pier Length: "+inchesToFeet(backPostLength));
+			window.println("Post Spacing East/West: "+inchesToFeet(postSpacingX));///////////////////
+			window.println("Post Spacing North/South: "+inchesToFeet(postSpacingY)+"\n");
 			
 			window.println("Rails: "+(int)rails);
 			window.println("Rail Splices: "+(int)railSplices);
-			window.println("Back Posts: "+(int)backPosts);
-			window.println("Front Posts: "+(int)frontPosts);
+			window.println("North Piers: "+(int)backPosts);
+			window.println("South Piers: "+(int)frontPosts);
 			if(usesVBraces) {
 				window.println("V-Braces: "+(int)vBraces);
 			}
@@ -407,14 +418,14 @@ Waste: 206.559166666666
 			window.println("Pipe Tees: "+(int)pipeTees);
 			window.println("Rail Mounting L-Brackets: "+(int)lBrackets+"\n");
 			
-			window.println("Pipes used for front posts: "+(int)pipesForFrontPosts);
-			window.println("Pipes used for back posts: "+(int)pipesForBackPosts);
+			window.println("Pipes used for south piers: "+(int)pipesForFrontPosts);
+			window.println("Pipes used for north piers: "+(int)pipesForBackPosts);
 			window.println("Pipes used for cross braces: "+(int)pipesForXBraces);
 			if(usesVBraces) {
 				window.println("Pipes used for v-braces: "+(int)pipesForVBraces);
 			}
-			window.println("Pipes used for front rail support: "+(int)pipesForFrontSupport);
-			window.println("Pipes used for back rail support: "+(int)pipesForBackSupport+"\n");
+			window.println("Pipes used for south rail support: "+(int)pipesForFrontSupport);
+			window.println("Pipes used for north rail support: "+(int)pipesForBackSupport+"\n");
 			
 			window.println("Total pipes used: "+(int)pipesUsed);
 			window.println("Parts left over: "+parts.size());
@@ -431,21 +442,21 @@ Waste: 206.559166666666
 			window.println("Rail Length: "+ratDec(railRunLength)+"\"");
 			window.println("Rail Spacing: "+ratDec(railSpacing)+"\"");
 			window.println("Panel overhang past rail: "+ratDec(panelProtrusion)+"\"");
-			window.println("Front Rail Support length: "+ratDec(supportWidth)+"\"");
-			window.println("Back Rail Support length: "+ratDec(supportWidth)+"\"");
+			window.println("South Rail Support length: "+ratDec(supportWidth)+"\"");
+			window.println("North Rail Support length: "+ratDec(supportWidth)+"\"");
 			if(usesVBraces) {
 				window.println("V-Brace length: "+ratDec(vBraceLength)+"\"");
 			}
 			window.println("Cross Brace length: "+ratDec(XBraceLength)+"\"");
-			window.println("Front Post length: "+ratDec(frontPostLength)+"\"");
-			window.println("Back Post Length: "+ratDec(backPostLength)+"\"");
-			window.println("Post Spacing (x): "+ratDec(postSpacingX)+"\"");
-			window.println("Post Spacing (y): "+ratDec(postSpacingY)+"\"\n");
+			window.println("South Pier length: "+ratDec(frontPostLength)+"\"");
+			window.println("North Pier Length: "+ratDec(backPostLength)+"\"");
+			window.println("Post Spacing East/West: "+ratDec(postSpacingX)+"\"");
+			window.println("Post Spacing North/South: "+ratDec(postSpacingY)+"\"\n");
 			
 			window.println("Rails: "+(int)rails);
 			window.println("Rail Splices: "+(int)railSplices);
-			window.println("Back Posts: "+(int)backPosts);
-			window.println("Front Posts: "+(int)frontPosts);
+			window.println("North Piers: "+(int)backPosts);
+			window.println("South Piers: "+(int)frontPosts);
 			if(usesVBraces) {
 				window.println("V-Braces: "+(int)vBraces);
 			}
@@ -457,14 +468,14 @@ Waste: 206.559166666666
 			window.println("Pipe Tees: "+(int)pipeTees);
 			window.println("Rail Mounting L-Brackets: "+(int)lBrackets+"\n");
 			
-			window.println("Pipes used for front posts: "+(int)pipesForFrontPosts);
-			window.println("Pipes used for back posts: "+(int)pipesForBackPosts);
+			window.println("Pipes used for south piers: "+(int)pipesForFrontPosts);
+			window.println("Pipes used for north piers: "+(int)pipesForBackPosts);
 			window.println("Pipes used for cross braces: "+(int)pipesForXBraces);
 			if(usesVBraces) {
 				window.println("Pipes used for v-braces: "+(int)pipesForVBraces);
 			}
-			window.println("Pipes used for front rail support: "+(int)pipesForFrontSupport);
-			window.println("Pipes used for back rail support: "+(int)pipesForBackSupport+"\n");
+			window.println("Pipes used for south rail support: "+(int)pipesForFrontSupport);
+			window.println("Pipes used for north rail support: "+(int)pipesForBackSupport+"\n");
 			
 			window.println("Total pipes used: "+(int)pipesUsed);
 			window.println("Parts left over: "+parts.size());
@@ -481,21 +492,21 @@ Waste: 206.559166666666
 			window.println("Rail Length: "+inchesToFeetWords(railRunLength));
 			window.println("Rail Spacing: "+inchesToFeetWords(railSpacing));
 			window.println("Panel overhang past rail: "+inchesToFeetWords(panelProtrusion));
-			window.println("Front Rail Support length: "+inchesToFeetWords(supportWidth));
-			window.println("Back Rail Support length: "+inchesToFeetWords(supportWidth));
+			window.println("South Rail Support length: "+inchesToFeetWords(supportWidth));
+			window.println("North Rail Support length: "+inchesToFeetWords(supportWidth));
 			if(usesVBraces) {
 				window.println("V-Brace length: "+inchesToFeetWords(vBraceLength));
 			}
 			window.println("Cross Brace length: "+inchesToFeetWords(XBraceLength));
-			window.println("Front Post length: "+inchesToFeetWords(frontPostLength));
-			window.println("Back Post Length: "+inchesToFeetWords(backPostLength));
-			window.println("Post Spacing (x): "+inchesToFeetWords(postSpacingX));///////////////////
-			window.println("Post Spacing (y): "+inchesToFeetWords(postSpacingY)+"\n");
+			window.println("South Pier length: "+inchesToFeetWords(frontPostLength));
+			window.println("North Pier Length: "+inchesToFeetWords(backPostLength));
+			window.println("Post Spacing East/West: "+inchesToFeetWords(postSpacingX));///////////////////
+			window.println("Post Spacing North/South: "+inchesToFeetWords(postSpacingY)+"\n");
 			
 			window.println("Rails: "+(int)rails);
 			window.println("Rail Splices: "+(int)railSplices);
-			window.println("Back Posts: "+(int)backPosts);
-			window.println("Front Posts: "+(int)frontPosts);
+			window.println("North Piers: "+(int)backPosts);
+			window.println("South Piers: "+(int)frontPosts);
 			if(usesVBraces) {
 				window.println("V-Braces: "+(int)vBraces);
 			}
@@ -507,14 +518,14 @@ Waste: 206.559166666666
 			window.println("Pipe Tees: "+(int)pipeTees);
 			window.println("Rail Mounting L-Brackets: "+(int)lBrackets+"\n");
 			
-			window.println("Pipes used for front posts: "+(int)pipesForFrontPosts);
-			window.println("Pipes used for back posts: "+(int)pipesForBackPosts);
+			window.println("Pipes used for south piers: "+(int)pipesForFrontPosts);
+			window.println("Pipes used for north piers: "+(int)pipesForBackPosts);
 			window.println("Pipes used for cross braces: "+(int)pipesForXBraces);
 			if(usesVBraces) {
 				window.println("Pipes used for v-braces: "+(int)pipesForVBraces);
 			}
-			window.println("Pipes used for front rail support: "+(int)pipesForFrontSupport);
-			window.println("Pipes used for back rail support: "+(int)pipesForBackSupport+"\n");
+			window.println("Pipes used for south rail support: "+(int)pipesForFrontSupport);
+			window.println("Pipes used for north rail support: "+(int)pipesForBackSupport+"\n");
 			
 			window.println("Total pipes used: "+(int)pipesUsed);
 			window.println("Parts left over: "+parts.size());
