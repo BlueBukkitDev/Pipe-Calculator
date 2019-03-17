@@ -171,19 +171,27 @@ public class Window extends JFrame implements ActionListener {
 		case "feetInchW2":{Main.format = 3; Main.accuracy = 32; return;}
 		case "feetInchW3":{Main.format = 3; Main.accuracy = 16; return;}
 		case "feetInchW4":{Main.format = 3; Main.accuracy = 8; return;}
-		case "panels":{input.setText(""+(int)(Main.panelsWide*4)); data.setText("Panels:"); selectedOption = e.getActionCommand(); return;}
+		case "panelsWide":{input.setText(""+(int)(Main.panelsWide)); data.setText("Panel Columns:"); selectedOption = e.getActionCommand(); return;}
+		case "panelsHigh":{input.setText(""+(int)(Main.panelsHigh)); data.setText("Panel Rows:"); selectedOption = e.getActionCommand(); return;}
 		case "pipeLength":{input.setText(""+Main.pipeLength+"\""); data.setText("Pipe Length:"); selectedOption = e.getActionCommand(); return;}
 		case "clampWidth":{input.setText(""+Main.ySpacing+"\""); data.setText("Clamp Width:"); selectedOption = e.getActionCommand(); return;}
 		case "panelSpace":{input.setText(""+Main.xSpacing+"\""); data.setText("Panel Space:"); selectedOption = e.getActionCommand(); return;}
+		case "railLength":{input.setText(""+Main.railLength+"\""); data.setText("Rail Length:"); selectedOption = e.getActionCommand(); return;}
 		case "railHang":{input.setText(""+Main.railExcess+"\""); data.setText("Rail Overhang:"); selectedOption = e.getActionCommand(); return;}
 		case "arrays":{input.setText(""+(int)Main.arrays); data.setText("Arrays:"); selectedOption = e.getActionCommand(); return;}
 ///////////////////////////////////////////////////////
 		case "inputEntry":{
-			if(selectedOption == "panels") {
-				if((Main.panelsWide = (int)(Double.parseDouble(input.getText())/4)) == 0) {
+			if(selectedOption == "panelsWide") {
+				if((Main.panelsWide = (int)(Double.parseDouble(input.getText()))) == 0) {
 					Main.panelsWide = 1;
 				}
-				input.setText(""+(int)(Main.panelsWide*4));
+				input.setText(""+(int)(Main.panelsWide));
+				return;
+			}else if(selectedOption == "panelsHigh") {
+				if((Main.panelsHigh = (int)(Double.parseDouble(input.getText()))) == 0) {
+					Main.panelsHigh = 1;
+				}
+				input.setText(""+(int)(Main.panelsHigh));
 				return;
 			}else if(selectedOption == "pipeLength") {
 				Main.pipeLength = Double.parseDouble(input.getText().replaceAll("\"", ""));
@@ -194,6 +202,10 @@ public class Window extends JFrame implements ActionListener {
 			}else if(selectedOption == "panelSpace") {
 				Main.xSpacing = Double.parseDouble(input.getText().replaceAll("\"", ""));
 				return;
+			}else if(selectedOption == "railLength") {
+				Main.railLength = Double.parseDouble(input.getText().replaceAll("\"", ""));
+				return;
+			}else if(selectedOption == "arrays") {
 			}else if(selectedOption == "railHang") {
 				Main.railExcess = Double.parseDouble(input.getText().replaceAll("\"", ""));
 				return;
@@ -213,13 +225,13 @@ public class Window extends JFrame implements ActionListener {
 		panels = new JMenu("AC-330P/156-72S");
 		JMenu options = new JMenu("Options");
 		JMenu formats = new JMenu("Formats");
-		data = new JMenu("Panels:");
+		data = new JMenu("Panel Columns:");
 		savedInput = new JMenu();
 		savedInput.setIcon(new ImageIcon(getClass().getResource("/check.png")));
 		savedInput.setToolTipText("Input is saved");
 		input = new JTextField("", 5);
 		input.setMaximumSize(new Dimension(80, 40));
-		input.setText(""+(int)(Main.panelsWide*4));
+		input.setText(""+(int)(Main.panelsWide));
 		input.addKeyListener(new KeyAdapter() {
 			char[] chars = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'};
 			@Override
@@ -592,36 +604,46 @@ public class Window extends JFrame implements ActionListener {
 		feetInch.setSelected(true);
 		
 		ButtonGroup dataOptions = new ButtonGroup();
-		CustomRadioButtonMenuItem panelsQuantity = new CustomRadioButtonMenuItem("Panels");
-		panelsQuantity.setSelected(true);
+		CustomRadioButtonMenuItem panelsWide = new CustomRadioButtonMenuItem("Panel Columns");
+		panelsWide.setSelected(true);
+		CustomRadioButtonMenuItem panelsHigh = new CustomRadioButtonMenuItem("Panel Rows");
 		CustomRadioButtonMenuItem pipeLength = new CustomRadioButtonMenuItem("Pipe Length");
 		CustomRadioButtonMenuItem clampWidth = new CustomRadioButtonMenuItem("Clamp Width");
 		CustomRadioButtonMenuItem panelSpacing = new CustomRadioButtonMenuItem("Panel Space");//How many pipes to be divided into posts + vbraces, how many into crossbraces + vbraces, etc. Need to add this into calcs. 
+		CustomRadioButtonMenuItem railLength = new CustomRadioButtonMenuItem("Rail Length");
 		CustomRadioButtonMenuItem railProtrusion = new CustomRadioButtonMenuItem("Rail Overhang");
 		CustomRadioButtonMenuItem arrays = new CustomRadioButtonMenuItem("Arrays");
-		panelsQuantity.setActionCommand("panels");
+		panelsWide.setActionCommand("panelsWide");
+		panelsHigh.setActionCommand("panelsHigh");
 		pipeLength.setActionCommand("pipeLength");
 		clampWidth.setActionCommand("clampWidth");
 		panelSpacing.setActionCommand("panelSpace");
+		railLength.setActionCommand("railLength");
 		railProtrusion.setActionCommand("railHang");
 		arrays.setActionCommand("arrays");
-		panelsQuantity.addActionListener(this);
+		panelsWide.addActionListener(this);
+		panelsHigh.addActionListener(this);
 		pipeLength.addActionListener(this);
 		clampWidth.addActionListener(this);
 		panelSpacing.addActionListener(this);
+		railLength.addActionListener(this);
 		railProtrusion.addActionListener(this);
 		arrays.addActionListener(this);
-		dataOptions.add(panelsQuantity);
+		dataOptions.add(panelsWide);
+		dataOptions.add(panelsHigh);
 		dataOptions.add(pipeLength);
 		dataOptions.add(clampWidth);
 		dataOptions.add(panelSpacing);
+		dataOptions.add(railLength);
 		dataOptions.add(railProtrusion);
 		dataOptions.add(arrays);
 		
-		data.add(panelsQuantity);
+		data.add(panelsWide);
+		data.add(panelsHigh);
 		data.add(pipeLength);
 		data.add(clampWidth);
 		data.add(panelSpacing);
+		data.add(railLength);
 		data.add(railProtrusion);
 		data.add(arrays);
 		

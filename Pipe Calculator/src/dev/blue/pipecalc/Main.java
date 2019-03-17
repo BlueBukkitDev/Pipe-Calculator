@@ -21,12 +21,13 @@ public class Main {
 	public static double frontPostHeight = 24;
 	public static double backPostHeight = 72;
 	
-	public static double backPostLength = pipeEmbed+backPostHeight;
+	public static double backPostLength;
 	public static double frontPostLength = pipeEmbed+frontPostHeight;
 	public static double XBraceLength = Math.hypot(frontPostHeight - concreteBase, postSpacingY);//multiple arrays next thing. Also look into a "print dialog"?
 	public static double vBraceLength;
 	public static boolean usesVBraces = true;
 	
+	public static double panelsHigh = 4;
 	public static double panelsWide = 1;
 	public static double panelWidth = 39.06;
 	public static double panelHeight = 77.01;
@@ -35,6 +36,8 @@ public class Main {
 	public static double railSpacing;
 	public static double panelProtrusion;
 	public static double railExcess = 3;
+	public static double railLength = 164;//13' 8"
+	public static double railRunLength;
 	
 	public static double arrayWidth;
 	public static double arrayHeight;
@@ -50,6 +53,7 @@ public class Main {
 	
 	public static double midClamps;
 	public static double endClamps;
+	public static double railSplices = 0;
 	public static double adjustableElbows;
 	public static double pipeTees;
 	public static double lBrackets;
@@ -114,16 +118,28 @@ Waste: 206.559166666666
 		railSpacing = panelAndSpace/2;
 		panelProtrusion = panelAndSpace/4;
 		
-		rails = panelsWide*2*arrays;
-		endClamps = rails*2;
-		midClamps = rails*3;
+		double railRuns = panelsWide*2*arrays;
+		endClamps = railRuns*2;
+		midClamps = railRuns*3;
 		arrayWidth = (panelHeight*panelsWide)+(xSpacing*(panelsWide-1));//Figuring the distance between posts
-		frameWidth = railSpacing*(rails/arrays-1)-6;//frameWidth is used only for posts. 
+		frameWidth = railSpacing*(railRuns/arrays-1)-6;//frameWidth is used only for posts. 
 		sets = Math.ceil(frameWidth/maxPostSpacing)+1;
 		postSpacingX = frameWidth/(sets-1);
 		sets *= arrays;
 		
-		arrayHeight = (panelWidth*4)+(ySpacing*3);
+		postSpacingY = 84 + ((panelsHigh - 4)*21);
+		arrayHeight = (panelWidth*panelsHigh)+(ySpacing*(panelsHigh-1));//arrayheight is the hypot. 
+		railRunLength = arrayHeight+railExcess*2;
+		if(railRunLength > railLength) {
+			if(railRunLength-railExcess*2 <= railLength) {
+				railRunLength = railLength;
+			}
+		}
+		double splicesPerRun = Math.floor(railRunLength/railLength);
+		railSplices = splicesPerRun*railRuns;
+		rails = Math.ceil(railRunLength/railLength*railRuns);
+		backPostHeight = postSpacingY/1.54;
+		backPostLength = pipeEmbed+backPostHeight;
 		
 		backPosts = sets;
 		frontPosts = sets;
@@ -133,7 +149,7 @@ Waste: 206.559166666666
 		}else vBraces = 0;
 		adjustableElbows = vBraces*2+xBraces*2;
 		pipeTees = frontPosts+backPosts;
-		lBrackets = rails*2;
+		lBrackets = railRuns*2;
 		supportWidth = frameWidth+12;
 		calculateBackPosts();
 		calculateFrontPosts();
@@ -154,6 +170,10 @@ Waste: 206.559166666666
 			pipesForFrontSupport+
 			pipesForVBraces+
 			pipesForXBraces;
+		//System.out.println("Calculating array spacing!");
+		//double hypot = panelWidth*4+ySpacing*3;
+		//double triHeight;
+		//double triWidth;
 	}
 	
 	private static void calculateBackPosts() {
@@ -315,7 +335,6 @@ Waste: 206.559166666666
 		}
 		return finalSpare;
 	}
-	//freecell #6244769
 	
 	private static void reset() {
 		vBraceLength = 0;
@@ -359,7 +378,7 @@ Waste: 206.559166666666
 			window.println("============================================");
 			window.println("Array Width: "+inchesToFeet(arrayWidth));
 			window.println("Frame Width: "+inchesToFeet(frameWidth));
-			window.println("Rail Length: "+inchesToFeet(arrayHeight+railExcess*2));
+			window.println("Rail Length: "+inchesToFeet(railRunLength));
 			window.println("Rail Spacing: "+inchesToFeet(railSpacing));
 			window.println("Panel overhang past rail: "+inchesToFeet(panelProtrusion));
 			window.println("Front Rail Support length: "+inchesToFeet(supportWidth));
@@ -374,6 +393,7 @@ Waste: 206.559166666666
 			window.println("Post Spacing (y): "+inchesToFeet(postSpacingY)+"\n");
 			
 			window.println("Rails: "+(int)rails);
+			window.println("Rail Splices: "+(int)railSplices);
 			window.println("Back Posts: "+(int)backPosts);
 			window.println("Front Posts: "+(int)frontPosts);
 			if(usesVBraces) {
@@ -408,7 +428,7 @@ Waste: 206.559166666666
 			window.println("============================================");
 			window.println("Array Width: "+ratDec(arrayWidth)+"\"");
 			window.println("Frame Width: "+ratDec(frameWidth)+"\"");
-			window.println("Rail Length: "+ratDec(arrayHeight+railExcess*2)+"\"");
+			window.println("Rail Length: "+ratDec(railRunLength)+"\"");
 			window.println("Rail Spacing: "+ratDec(railSpacing)+"\"");
 			window.println("Panel overhang past rail: "+ratDec(panelProtrusion)+"\"");
 			window.println("Front Rail Support length: "+ratDec(supportWidth)+"\"");
@@ -423,6 +443,7 @@ Waste: 206.559166666666
 			window.println("Post Spacing (y): "+ratDec(postSpacingY)+"\"\n");
 			
 			window.println("Rails: "+(int)rails);
+			window.println("Rail Splices: "+(int)railSplices);
 			window.println("Back Posts: "+(int)backPosts);
 			window.println("Front Posts: "+(int)frontPosts);
 			if(usesVBraces) {
@@ -457,7 +478,7 @@ Waste: 206.559166666666
 			window.println("============================================");
 			window.println("Array Width: "+inchesToFeetWords(arrayWidth));
 			window.println("Frame Width: "+inchesToFeetWords(frameWidth));
-			window.println("Rail Length: "+inchesToFeetWords(arrayHeight+railExcess*2));
+			window.println("Rail Length: "+inchesToFeetWords(railRunLength));
 			window.println("Rail Spacing: "+inchesToFeetWords(railSpacing));
 			window.println("Panel overhang past rail: "+inchesToFeetWords(panelProtrusion));
 			window.println("Front Rail Support length: "+inchesToFeetWords(supportWidth));
@@ -472,6 +493,7 @@ Waste: 206.559166666666
 			window.println("Post Spacing (y): "+inchesToFeetWords(postSpacingY)+"\n");
 			
 			window.println("Rails: "+(int)rails);
+			window.println("Rail Splices: "+(int)railSplices);
 			window.println("Back Posts: "+(int)backPosts);
 			window.println("Front Posts: "+(int)frontPosts);
 			if(usesVBraces) {
