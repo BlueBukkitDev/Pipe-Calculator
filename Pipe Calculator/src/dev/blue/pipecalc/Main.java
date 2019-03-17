@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Main {
 	public static List<Pipe> parts = new ArrayList<Pipe>();
-	public static String version = "1.3";
+	public static String version = "1.4";
 	public static int format = 1;
 	public static int accuracy = 16;
 	public static double arrays = 1;
